@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="zh-CN">
+<head th:include="include/cdHead::head"></head>
+<body>
+
+<div th:include="include/nav::inNav"></div>
+
+<div class="jumbotron" style="background-color: #623552">
+    <div class="container">
+        <br/>
+        <h1 style="color: white">快速配置</h1>
+        <br/>
+        <p style="color: white">只需简单几步，让数据监控工作简单、有效、稳定地生成报告并通知</p>
+        <br/>
+        <p><a class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#myModal">快速添加数据库</a>
+            <a class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#addEmail">添加通讯邮箱</a>
+        </p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">监控数据库列表</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <tr>
+                    <th>#</th>
+                    <th>库中文名</th>
+                    <th>库名</th>
+                    <th>最新监控时间</th>
+                    <th>操作</th>
+                </tr>
+                <tbody>
+                <tr th:each="data,dataStat:${databases}">
+                    <td th:text="${dataStat.index+1}"></td>
+                    <td th:text="${data.schemaCnName}"></td>
+                    <td th:text="${data.schemaName}"></td>
+                    <td th:text="${data.monitoringDate}"></td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-xs"
+                                th:onclick="'javascript:removedDataba(\''+${data.id}+'\')'">移除
+                        </button>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--添加邮箱-->
+<div class="modal fade" id="addEmail" tabindex="-1" role="dialog" aria-labelledby="addEmail">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="addEmailLabel">添加通讯邮箱</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <form id="emailForm">
+                        <label for="email">邮箱<span style="color: red"> *</span></label>
+                        <input type="text" class="form-control" id="email" name="emailAddress"
+                               placeholder="xxx@xxx.com">
+                        <br/>
+                        <label for="email">通知类型<span style="color: red"> *</span></label>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="sendType" value="1" checked>
+                                每天
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="sendType" value="2">
+                                每周
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="sendType" value="3">
+                                每月
+                            </label>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">邮箱列表</div>
+                    <div class="panel-body">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>邮箱</th>
+                                <th>类型</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody id="emailContent">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="buuton" id="emailSave" class="btn btn-primary">保存</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">添加监控数据库</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <form id="databaseForm">
+                        <label for="kcn">数据库中文名<span style="color: red"> *</span></label>
+                        <input type="text" class="form-control" id="kcn" name="schemaCnName"
+                               placeholder="TR库">
+                        <label for="km">数据库名<span style="color: red"> *</span></label>
+                        <input type="text" class="form-control" id="km" name="schemaName"
+                               placeholder="RHIN_TR">
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="buuton" id="databaseSave" class="btn btn-primary">保存</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script>
+
+
+    $('#remail').click(function () {
+        $('#databaseId').val($(this).val());
+        $('#setEmail').modal("show");
+
+    });
+
+    $('#addEmail').on('show.bs.modal', function (e) {
+        $.ajax({
+            type: "POST",
+            url: "/email/emailList",
+            success: function (data) {
+                $('#emailContent').html("");
+                var vhtml = "";
+                for (var i = 0; i < data.length; i++) {
+                    var type = "";
+                    if (data[i].sendType == '1') {
+                        type = "每天"
+                    } else if (data[i].sendType == '2') {
+                        type = "每周"
+                    } else {
+                        type = "每月"
+                    }
+
+                    vhtml += '<tr><td>' + data[i].emailAddress + '</td><td>' + type + '</td>' +
+                        '<td><button type=\"button\" class=\"btn btn-danger btn-xs\" onclick=\"removedEmail(' + data[i].id + ')\">移除</button></td></tr>';
+                }
+                $('#emailContent').append(vhtml);
+            }
+        });
+    })
+
+    function removedEmail(id) {
+        $.ajax({
+            type: "POST",
+            url: "/email/delete",
+            data: "id=" + id,
+            success: function (data) {
+                alert("删除成功");
+                $('#emailContent').html("");
+                var vhtml = "";
+                for (var i = 0; i < data.length; i++) {
+                    var type = "";
+                    if (data[i].sendType == '1') {
+                        type = "每天"
+                    } else if (data[i].sendType == '2') {
+                        type = "每周"
+                    } else {
+                        type = "每月"
+                    }
+
+                    vhtml += '<tr><td>' + data[i].emailAddress + '</td><td>' + type + '</td>' +
+                        '<td><button type=\"button\" class=\"btn btn-danger btn-xs\" onclick=\"removedEmail(' + data[i].id + ')\">移除</button></td></tr>';
+                }
+                $('#emailContent').append(vhtml);
+            }
+        });
+    }
+
+    function removedDataba(id) {
+        $.ajax({
+            type: "POST",
+            url: "/database/delete",
+            data: "id=" + id,
+            success: function (data) {
+                if (data.type == true) {
+                    alert("移除成功")
+                    window.location.reload();
+                } else {
+                    alert("error");
+                }
+            }
+        });
+    }
+
+    $('#emailSave').click(function () {
+        if ($('#email').val() != "") {
+            $.ajax({
+                type: "POST",
+                url: "/email/save",
+                data: $('#emailForm').serialize(),
+                success: function (data) {
+                    $('#emailContent').html("");
+                    var vhtml = "";
+                    for (var i = 0; i < data.length; i++) {
+                        var type = "";
+                        if (data[i].sendType == '1') {
+                            type = "每天"
+                        } else if (data[i].sendType == '2') {
+                            type = "每周"
+                        } else {
+                            type = "每月"
+                        }
+
+                        vhtml += '<tr><td>' + data[i].emailAddress + '</td><td>' + type + '</td>' +
+                            '<td><button type=\"button\" class=\"btn btn-danger btn-xs\" onclick=\"removedEmail(' + data[i].id + ')\">移除</button></td></tr>';
+                    }
+                    $('#emailContent').append(vhtml);
+                }
+            });
+        } else {
+            alert("必填项不能为空");
+        }
+    });
+
+    $('#databaseSave').click(function () {
+        if ($('#kcn').val() != "" && $('#km').val() != "") {
+            $.ajax({
+                type: "POST",
+                url: "/database/save",
+                data: $('#databaseForm').serialize(),
+                success: function (data) {
+                    if (data.type == true) {
+                        alert("成功添加数据库")
+                        window.location.reload();
+                    } else {
+                        alert("error");
+                    }
+                }
+            });
+        } else {
+            alert("必填项不能为空");
+        }
+    });
+
+</script>
+
+</html>
