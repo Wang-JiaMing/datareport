@@ -17,9 +17,16 @@ import java.util.List;
  **/
 public class DataReportMail {
 
-    public static String getHead(List<TbCfgDatabase> tbCfgDatabases) {
+    public static String getHead(String reportType,List<TbCfgDatabase> tbCfgDatabases) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
         String time = sdf.format(new Date());
+        if(reportType.equals("1")){
+            time=time+"数据日报告";
+        }else if(reportType.equals("2")){
+            time=time+"数据周报告";
+        }else if(reportType.equals("3")){
+            time=time+"数据月报告";
+        }
         StringBuffer nameb = new StringBuffer();
         for (TbCfgDatabase name : tbCfgDatabases) {
             nameb.append(name.getSchemaName() + " ");
@@ -40,7 +47,7 @@ public class DataReportMail {
                 "<body>\n" +
                 "<div class=\"jumbotron\" style=\"background-color: #623552\">\n" +
                 "    <div class=\"container\" style=\"color: white\">\n" +
-                "        <h1>" + time + " 数据报告</h1>\n" +
+                "        <h1>" + time + "</h1>\n" +
                 "        <br/>\n" +
                 "        <p>以下是报告内容包括：" + nameb.toString() + "</p>\n" +
                 "    </div>\n" +

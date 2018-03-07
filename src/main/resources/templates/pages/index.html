@@ -11,10 +11,10 @@
         <br/>
         <h1 style="color: white">快速配置</h1>
         <br/>
-        <p style="color: white">只需简单几步，让数据监控工作简单、有效、稳定地生成报告并通知</p>
+        <p style="color: white">只需简单两步，让数据监控工作简单、有效、稳定地生成报告并及时通知</p>
         <br/>
-        <p><a class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#myModal">快速添加数据库</a>
-            <a class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#addEmail">添加通讯邮箱</a>
+        <p> <a class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#myModal">1.快速添加数据库</a>
+            <a class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#addEmail">2.添加报告邮箱</a>
         </p>
     </div>
 </div>
@@ -22,7 +22,11 @@
 <div class="container">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title">监控数据库列表</h3>
+            <h3 class="panel-title">监控数据库列表
+                <div style="float:right">
+                    <button type="button" class="btn btn-primary btn-xs" th:onclick="'javascript:sendAllReport()'">发送邮件总报告</button>
+                </div>
+            </h3>
         </div>
         <div class="panel-body">
             <table class="table table-hover">
@@ -30,7 +34,9 @@
                     <th>#</th>
                     <th>库中文名</th>
                     <th>库名</th>
-                    <th>最新监控时间</th>
+                    <th>最新日统计时间</th>
+                    <th>最新周统计时间</th>
+                    <th>最新月统计时间</th>
                     <th>操作</th>
                 </tr>
                 <tbody>
@@ -38,8 +44,13 @@
                     <td th:text="${dataStat.index+1}"></td>
                     <td th:text="${data.schemaCnName}"></td>
                     <td th:text="${data.schemaName}"></td>
-                    <td th:text="${data.monitoringDate}"></td>
+                    <td th:text="${data.monitoringDay}"></td>
+                    <td th:text="${data.monitoringWeek}"></td>
+                    <td th:text="${data.monitoringMonths}"></td>
                     <td>
+                        <button type="button" class="btn btn-primary btn-xs"
+                                th:onclick="'javascript:sendReport(\''+${data.id}+'\')'">发送报告
+                        </button>
                         <button type="button" class="btn btn-danger btn-xs"
                                 th:onclick="'javascript:removedDataba(\''+${data.id}+'\')'">移除
                         </button>
@@ -128,7 +139,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel">添加监控数据库</h4>
+                <h4 class="modal-title" id="myModalLabel">添加数据库</h4>
             </div>
             <div class="modal-body">
 
@@ -153,10 +164,105 @@
     </div>
 </div>
 
+
+
+<div class="modal fade" id="setMailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="setMailModalLabel">发送邮箱</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <form id="sendMailDatabaseForm">
+                        <input type="hidden" id="setMailDatabaseId" name="id" value=""/>
+                        <label for="de">邮箱<span style="color: red"> *</span></label>
+                        <input type="text" class="form-control" id="de" name="emailAddress" placeholder="xxx@xxx.com">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="reportType" value="1" checked>
+                                最新日报告
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="reportType" value="2">
+                                最新周报告
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="reportType" value="3">
+                                最新月报告
+                            </label>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="buuton" id="sendMailBtn" class="btn btn-primary">发送</button>
+                <button type="buuton" id="sendAllMailBtn" class="btn btn-primary">发送</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 </body>
 
 <script>
 
+    function sendAllReport(){
+        $('#sendAllMailBtn').show();
+        $('#sendMailBtn').hide();
+        $('#setMailModal').modal("show");
+    }
+
+    function sendReport(id){
+        $('#sendAllMailBtn').hide();
+        $('#sendMailBtn').show();
+        $('#setMailDatabaseId').val(id);
+        $('#setMailModal').modal("show");
+    }
+
+    $('#sendAllMailBtn').click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/database/sendAllReport",
+            data: $('#sendMailDatabaseForm').serialize(),
+            success: function (data) {
+                if (data.type == true) {
+                    alert("发送成功");
+                    $('#setMailModal').modal("hide");
+                } else {
+                    alert("error");
+                }
+            }
+        });
+    })
+
+    $('#sendMailBtn').click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/database/sendReport",
+            data: $('#sendMailDatabaseForm').serialize(),
+            success: function (data) {
+                if (data.type == true) {
+                    alert("发送成功");
+                    $('#setMailModal').modal("hide");
+                } else {
+                    alert("error");
+                }
+            }
+        });
+    })
 
     $('#remail').click(function () {
         $('#databaseId').val($(this).val());

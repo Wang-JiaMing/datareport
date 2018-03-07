@@ -22,16 +22,42 @@ public class TbCfgDatabase{
     private String schemaCnName;
     @Column(columnDefinition="INT default 0")
     private String removed;
-    private Date monitoringDate;
+    private Date monitoringDay;
+    private Date monitoringWeek;
+    private Date monitoringMonths;
     private Date createDate;
+    private String dataTitle;
 
-
-    public Date getMonitoringDate() {
-        return monitoringDate;
+    public String getDataTitle() {
+        return dataTitle;
     }
 
-    public void setMonitoringDate(Date monitoringDate) {
-        this.monitoringDate = monitoringDate;
+    public void setDataTitle(String dataTitle) {
+        this.dataTitle = dataTitle;
+    }
+
+    public Date getMonitoringDay() {
+        return monitoringDay;
+    }
+
+    public void setMonitoringDay(Date monitoringDay) {
+        this.monitoringDay = monitoringDay;
+    }
+
+    public Date getMonitoringWeek() {
+        return monitoringWeek;
+    }
+
+    public void setMonitoringWeek(Date monitoringWeek) {
+        this.monitoringWeek = monitoringWeek;
+    }
+
+    public Date getMonitoringMonths() {
+        return monitoringMonths;
+    }
+
+    public void setMonitoringMonths(Date monitoringMonths) {
+        this.monitoringMonths = monitoringMonths;
     }
 
     public Long getId() {

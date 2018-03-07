@@ -19,15 +19,34 @@ public class DataReport {
     @Autowired
     DatabaseService databaseService;
 
-    @Scheduled(cron = "0 0 */1 * * ?")
-    public void monitor() {
-        System.out.println("======进入报告======");
-        databaseService.saveReport();
-        System.out.println("======结束报告======");
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void monitorByDay() {
+        databaseService.saveReportByDay();
+        try {
+            databaseService.sendMail("1");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    @Scheduled(cron = "0 0 1 * * ?")
-    public void sendMail() throws Exception {
-        databaseService.sendMail();
+    @Scheduled(cron = "0 0 0 ? * MON")
+    public void monitorByWeek() {
+        databaseService.saveReportByWeek();
+        try {
+            databaseService.sendMail("2");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+    @Scheduled(cron = "0 0 0 1 * ? ")
+    public void monitorByMonths() {
+        databaseService.saveReportByMonths();
+        try {
+            databaseService.sendMail("3");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

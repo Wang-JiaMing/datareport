@@ -25,6 +25,8 @@ import java.util.List;
 @RequestMapping("/database")
 public class DatabaseController {
 
+
+
     @Autowired
     DatabaseService databaseService;
 
@@ -59,6 +61,34 @@ public class DatabaseController {
         return message;
     }
 
+    @RequestMapping("/sendReport")
+    @ResponseBody
+    public Message sendReport(String id,String reportType,String emailAddress) {
+        Message message=new Message();
+        try {
+            databaseService.sendReport(reportType,Long.valueOf(id),emailAddress);
+            message.setType(true);
+        }catch (Exception e){
+            e.printStackTrace();
+            message.setType(false);
+        }
+        return message;
 
+    }
+
+    @RequestMapping("/sendAllReport")
+    @ResponseBody
+    public Message sendReport(String reportType,String emailAddress) {
+        Message message=new Message();
+        try {
+            databaseService.sendAllReport(reportType,emailAddress);
+            message.setType(true);
+        }catch (Exception e){
+            e.printStackTrace();
+            message.setType(false);
+        }
+        return message;
+
+    }
 
 }

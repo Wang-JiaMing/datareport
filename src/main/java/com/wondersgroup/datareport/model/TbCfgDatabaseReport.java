@@ -24,9 +24,23 @@ public class TbCfgDatabaseReport {
     private String dataNumber;
     private String growNumber;
     private String growPercent;
+    /**
+     * 1.日统计
+     * 2.周统计
+     * 3.月统计
+     */
+    private String reportType;
     @Column(columnDefinition = "INT default 0")
     private String removed;
     private Date createDate;
+
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
+    }
 
     public String getGrowNumber() {
         return growNumber;

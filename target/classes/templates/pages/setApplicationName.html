@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="zh-CN">
+<head th:include="include/cdHead::head"></head>
+<body>
+
+<div th:include="include/nav::inNav"></div>
+
+<div style="height: 100px"></div>
+
+<div class="container">
+    <div class="panel panel-primary">
+        <div class="panel-heading" align="center">
+            <h3 class="panel-title">首次登陆请输入数据库标题</h3>
+        </div>
+        <div class="panel-body">
+            <form id="applicationName">
+                <input type="text" class="form-control" id="email" name="title" placeholder="越秀全民健康126数据库"/>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="buuton" id="save" class="btn btn-primary">保存</button>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+    $("#save").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/index/setApplicationName",
+            data: $('#applicationName').serialize(),
+            success: function (data) {
+                if(data.type==true) {
+                    window.location.reload();
+                }else{
+                    alert("error");
+                }
+            }
+        });
+    })
+
+</script>
+
+</html>
