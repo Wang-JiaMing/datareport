@@ -58,10 +58,12 @@ public class IndexController {
             if (APPLICATIONNAME == "") {
                 return "pages/setApplicationName";
             } else {
+                model.addAttribute("title", APPLICATIONNAME);
                 model.addAttribute("databases", tbCfgDatabases);
                 return "pages/index";
             }
         } else {
+            model.addAttribute("title", APPLICATIONNAME);
             model.addAttribute("databases", tbCfgDatabases);
             return "pages/index";
         }
