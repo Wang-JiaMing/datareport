@@ -8,6 +8,7 @@ import com.wondersgroup.datareport.model.TbCfgDatabase;
 import com.wondersgroup.datareport.model.TbCfgDatabaseReport;
 import com.wondersgroup.datareport.model.TbCfgReportEmail;
 import com.wondersgroup.datareport.tasks.DataReport;
+import com.wondersgroup.datareport.utils.Echart3DBarModal;
 import com.wondersgroup.datareport.utils.SendMail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -162,7 +163,7 @@ public class DatabaseService {
     public void sendMail(String reportType) throws Exception {
         List<TbCfgDatabase> tbCfgDatabases = databaseRepository.findByRemoved("0");
         StringBuffer htmlContent = new StringBuffer();
-        htmlContent.append(DataReportMail.getHead(reportType,tbCfgDatabases));
+        htmlContent.append(DataReportMail.getHead(reportType, tbCfgDatabases));
         for (TbCfgDatabase tbCfgDatabase : tbCfgDatabases) {
             Date mDate = new Date();
             if ("1".equals(reportType)) {
@@ -180,7 +181,7 @@ public class DatabaseService {
         List<TbCfgReportEmail> tbCfgReportEmails = reportEmailRepository.findByRemoved("0");
         for (TbCfgReportEmail tbCfgReportEmail : tbCfgReportEmails) {
             if (tbCfgReportEmail.getSendType().equals("1")) {
-                sendMail.sendHtmlMail(tbCfgDatabases.get(0).getDataTitle()+"数据监控报告", htmlContent.toString(), tbCfgReportEmail.getEmailAddress());
+                sendMail.sendHtmlMail(tbCfgDatabases.get(0).getDataTitle() + "数据监控报告", htmlContent.toString(), tbCfgReportEmail.getEmailAddress());
             }
         }
     }
@@ -188,7 +189,7 @@ public class DatabaseService {
     public void sendAllReport(String reportType, String emailAddress) throws Exception {
         List<TbCfgDatabase> tbCfgDatabases = databaseRepository.findByRemoved("0");
         StringBuffer htmlContent = new StringBuffer();
-        htmlContent.append(DataReportMail.getHead(reportType,tbCfgDatabases));
+        htmlContent.append(DataReportMail.getHead(reportType, tbCfgDatabases));
         for (TbCfgDatabase tbCfgDatabase : tbCfgDatabases) {
             Date mDate = new Date();
             if ("1".equals(reportType)) {
@@ -203,7 +204,7 @@ public class DatabaseService {
         }
         htmlContent.append(DataReportMail.lastHtml());
         SendMail sendMail = new SendMail();
-        sendMail.sendHtmlMail(tbCfgDatabases.get(0).getDataTitle()+"数据监控报告", htmlContent.toString(), emailAddress);
+        sendMail.sendHtmlMail(tbCfgDatabases.get(0).getDataTitle() + "数据监控报告", htmlContent.toString(), emailAddress);
 
 
     }
@@ -213,7 +214,7 @@ public class DatabaseService {
         List<TbCfgDatabase> tbCfgDatabaseList = new ArrayList<>();
         tbCfgDatabaseList.add(tbCfgDatabases);
         StringBuffer htmlContent = new StringBuffer();
-        htmlContent.append(DataReportMail.getHead(reportType,tbCfgDatabaseList));
+        htmlContent.append(DataReportMail.getHead(reportType, tbCfgDatabaseList));
         for (TbCfgDatabase tbCfgDatabase : tbCfgDatabaseList) {
             Date mDate = new Date();
             if ("1".equals(reportType)) {
@@ -228,8 +229,29 @@ public class DatabaseService {
         }
         htmlContent.append(DataReportMail.lastHtml());
         SendMail sendMail = new SendMail();
-        sendMail.sendHtmlMail(tbCfgDatabases.getDataTitle()+"数据监控报告", htmlContent.toString(), emailAddress);
+        sendMail.sendHtmlMail(tbCfgDatabases.getDataTitle() + "数据监控报告", htmlContent.toString(), emailAddress);
 
+    }
+
+    public Echart3DBarModal fidAll(String id) {
+        Echart3DBarModal echart3DBarModal = new Echart3DBarModal();
+        List<Date> createDate = databaseReportRepository.findDistinctCreateDate(id + "", "1", "0");
+        echart3DBarModal.setTime(createDate);
+        List<String> tableName = databaseReportRepository.findDistinctTableName(id + "", "1", "0");
+        echart3DBarModal.setTableName(tableName);
+        List<List<String>> numberList=new ArrayList<>();
+        for (int i = 0; i < tableName.size(); i++) {
+            for (int j = 0; j < createDate.size(); j++) {
+                String number=databaseReportRepository.findDataNumber(tableName.get(i),createDate.get(j),id + "", "1", "0");
+                String num=i+","+j+","+number;
+                List<String> strings=new ArrayList<>();
+                strings.add(num);
+                numberList.add(strings);
+
+            }
+        }
+        echart3DBarModal.setData(numberList);
+        return echart3DBarModal;
     }
 
 }

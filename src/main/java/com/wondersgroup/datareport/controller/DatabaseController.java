@@ -34,6 +34,7 @@ public class DatabaseController {
     @ResponseBody
     public Message toPage(TbCfgDatabase tbCfgDatabase) {
         Message message=new Message();
+        tbCfgDatabase.setDataTitle(IndexController.getAPPLICATIONNAME());
         tbCfgDatabase.setCreateDate(new Date());
         tbCfgDatabase.setSchemaName(tbCfgDatabase.getSchemaCnName().toUpperCase());
         tbCfgDatabase.setRemoved("0");
