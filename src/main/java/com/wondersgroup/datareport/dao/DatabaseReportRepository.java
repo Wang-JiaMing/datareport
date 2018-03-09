@@ -21,7 +21,7 @@ import java.util.List;
 public interface DatabaseReportRepository extends JpaRepository<TbCfgDatabaseReport,Long> {
 
 
-    @Query(value="select a.table_name,nvl(b.comments,'-'),nvl(a.num_rows,0) from ALL_tables a left join user_tab_comments b on a.table_name=b.table_name where a.owner=?1 ",nativeQuery = true)
+    @Query(value="select a.table_name,nvl(b.comments,'-'),nvl(a.num_rows,0) from ALL_tables a left join all_tab_comments b on a.table_name=b.table_name where a.owner=?1 ",nativeQuery = true)
     List<Object[]> getTableContent(String schemaName);
 
     List<TbCfgDatabaseReport> findByTableNameAndReportTypeAndRemovedOrderByCreateDateDesc(String tableName,String reportType,String removed);

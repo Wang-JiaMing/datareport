@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,8 +75,9 @@ public class DatabaseService {
                     Integer growTotal = Integer.valueOf(dataC[2].toString()) - Integer.valueOf(oldDatabaseReport.get(0).getDataNumber());
                     tbCfgDatabaseReport.setGrowNumber(growTotal + "");
                     if (Double.valueOf(oldDatabaseReport.get(0).getDataNumber()) != 0) {
-                        Double grow = Double.valueOf(dataC[2].toString()) / Double.valueOf(oldDatabaseReport.get(0).getDataNumber()) - 1;
-                        tbCfgDatabaseReport.setGrowPercent(grow + "");
+                        DecimalFormat df = new DecimalFormat("#.00");
+                        Double grow = (Double.valueOf(dataC[2].toString()) / Double.valueOf(oldDatabaseReport.get(0).getDataNumber()) - 1) * 100;
+                        tbCfgDatabaseReport.setGrowPercent(df.format(grow));
                     } else {
                         tbCfgDatabaseReport.setGrowPercent("0.0");
                     }
@@ -110,8 +112,9 @@ public class DatabaseService {
                     Integer growTotal = Integer.valueOf(dataC[2].toString()) - Integer.valueOf(oldDatabaseReport.get(0).getDataNumber());
                     tbCfgDatabaseReport.setGrowNumber(growTotal + "");
                     if (Double.valueOf(oldDatabaseReport.get(0).getDataNumber()) != 0) {
-                        Double grow = Double.valueOf(dataC[2].toString()) / Double.valueOf(oldDatabaseReport.get(0).getDataNumber()) - 1;
-                        tbCfgDatabaseReport.setGrowPercent(grow + "");
+                        DecimalFormat df = new DecimalFormat("#.00");
+                        Double grow = (Double.valueOf(dataC[2].toString()) / Double.valueOf(oldDatabaseReport.get(0).getDataNumber()) - 1)*100;
+                        tbCfgDatabaseReport.setGrowPercent(df.format(grow));
                     } else {
                         tbCfgDatabaseReport.setGrowPercent("0.0");
                     }
@@ -145,8 +148,9 @@ public class DatabaseService {
                     Integer growTotal = Integer.valueOf(dataC[2].toString()) - Integer.valueOf(oldDatabaseReport.get(0).getDataNumber());
                     tbCfgDatabaseReport.setGrowNumber(growTotal + "");
                     if (Double.valueOf(oldDatabaseReport.get(0).getDataNumber()) != 0) {
-                        Double grow = Double.valueOf(dataC[2].toString()) / Double.valueOf(oldDatabaseReport.get(0).getDataNumber()) - 1;
-                        tbCfgDatabaseReport.setGrowPercent(grow + "");
+                        DecimalFormat df = new DecimalFormat("#.00");
+                        Double grow = (Double.valueOf(dataC[2].toString()) / Double.valueOf(oldDatabaseReport.get(0).getDataNumber()) - 1)*100;
+                        tbCfgDatabaseReport.setGrowPercent(df.format(grow));
                     } else {
                         tbCfgDatabaseReport.setGrowPercent("0.0");
                     }
@@ -237,12 +241,12 @@ public class DatabaseService {
         echart3DBarModal.setTime(createDate);
         List<String> tableName = databaseReportRepository.findDistinctTableName(id + "", "1", "0");
         echart3DBarModal.setTableName(tableName);
-        List<List<String>> numberList=new ArrayList<>();
+        List<List<String>> numberList = new ArrayList<>();
         for (int i = 0; i < tableName.size(); i++) {
             for (int j = 0; j < createDate.size(); j++) {
-                String number=databaseReportRepository.findDataNumber(tableName.get(i),createDate.get(j),id + "", "1", "0");
-                String num=i+","+j+","+number;
-                List<String> strings=new ArrayList<>();
+                String number = databaseReportRepository.findDataNumber(tableName.get(i), createDate.get(j), id + "", "1", "0");
+                String num = i + "," + j + "," + number;
+                List<String> strings = new ArrayList<>();
                 strings.add(num);
                 numberList.add(strings);
 
