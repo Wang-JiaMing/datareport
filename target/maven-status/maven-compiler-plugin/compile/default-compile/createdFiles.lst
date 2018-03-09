@@ -1,6 +1,7 @@
 com/wondersgroup/datareport/tasks/DataReport.class
 com/wondersgroup/datareport/DatareportApplication.class
 com/wondersgroup/datareport/utils/DateUtil.class
+com/wondersgroup/datareport/utils/Echart3DBarModal.class
 com/wondersgroup/datareport/utils/Md5Util.class
 com/wondersgroup/datareport/model/TbCfgDatabase.class
 com/wondersgroup/datareport/service/DatabaseService.class

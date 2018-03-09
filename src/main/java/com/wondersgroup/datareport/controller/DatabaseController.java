@@ -36,7 +36,7 @@ public class DatabaseController {
         Message message=new Message();
         tbCfgDatabase.setDataTitle(IndexController.getAPPLICATIONNAME());
         tbCfgDatabase.setCreateDate(new Date());
-        tbCfgDatabase.setSchemaName(tbCfgDatabase.getSchemaCnName().toUpperCase());
+        tbCfgDatabase.setSchemaName(tbCfgDatabase.getSchemaName().toUpperCase());
         tbCfgDatabase.setRemoved("0");
         try {
             databaseService.saveDatabase(tbCfgDatabase);

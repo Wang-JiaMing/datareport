@@ -23,7 +23,7 @@ public class DataReport {
     public void monitorByDay() {
         databaseService.saveReportByDay();
         try {
-           // databaseService.sendMail("1");
+            databaseService.sendMail("1");
         } catch (Exception e) {
             e.printStackTrace();
         }

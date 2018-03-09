@@ -205,8 +205,6 @@ public class DatabaseService {
         htmlContent.append(DataReportMail.lastHtml());
         SendMail sendMail = new SendMail();
         sendMail.sendHtmlMail(tbCfgDatabases.get(0).getDataTitle() + "数据监控报告", htmlContent.toString(), emailAddress);
-
-
     }
 
     public void sendReport(String reportType, Long id, String emailAddress) throws Exception {
