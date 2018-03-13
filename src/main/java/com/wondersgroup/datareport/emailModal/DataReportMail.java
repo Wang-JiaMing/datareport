@@ -61,7 +61,7 @@ public class DataReportMail {
         stringBuffer.append("<div class=\"container\">\n" +
                 "    <div class=\"panel panel-default\">\n" +
                 "        <div class=\"panel-heading\">\n" +
-                "            " + tbCfgDatabaseReports.get(0).getDatabase().getSchemaName() + "\n" +
+                "            " + tbCfgDatabaseReports.get(0).getDatabase().getSchemaName() +"["+tbCfgDatabaseReports.get(0).getDatabase().getSchemaCnName()+"]\n" +
                 "        </div>\n" +
                 "        <div class=\"panel-body\">\n" +
                 "            <table class=\"table table-hover\">\n" +
