@@ -17,7 +17,7 @@ import java.util.Date;
 public class SendMail {
 
     public static String myEmailAccount = "gzwanda020@sina.com";
-    public static String myEmailPassword = "gzwanda020";
+    public static String myEmailPassword = "";
     public static String myEmailSMTPHost = "smtp.sina.com";
     public final void sendHtmlMail(String title,String content,String addressMail)throws Exception{
         // 不要使用SimpleEmail,会出现乱码问题
@@ -39,10 +39,10 @@ public class SendMail {
             email.setMsg(content);
             // 发送
             email.send();
-            System.out.println("邮件发送成功!");
+            System.out.println(addressMail+" 邮件发送成功!");
         } catch (EmailException e) {
             e.printStackTrace();
-            System.out.println("邮件发送失败!");
+            System.out.println(addressMail+" 邮件发送失败!");
         }
     }
 
