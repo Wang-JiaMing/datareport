@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataReport {
 
+    public static Boolean sendMailType = false;
+
     @Autowired
     DatabaseService databaseService;
 
@@ -23,7 +25,9 @@ public class DataReport {
     public void monitorByDay() {
         databaseService.saveReportByDay();
         try {
-            databaseService.sendMail("1");
+            if (sendMailType) {
+                databaseService.sendMail("1");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -33,7 +37,9 @@ public class DataReport {
     public void monitorByWeek() {
         databaseService.saveReportByWeek();
         try {
-            databaseService.sendMail("2");
+            if (sendMailType) {
+                databaseService.sendMail("2");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,7 +49,9 @@ public class DataReport {
     public void monitorByMonths() {
         databaseService.saveReportByMonths();
         try {
-            databaseService.sendMail("3");
+            if (sendMailType) {
+                databaseService.sendMail("3");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

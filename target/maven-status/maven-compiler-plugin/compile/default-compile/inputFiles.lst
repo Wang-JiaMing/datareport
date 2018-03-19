@@ -3,10 +3,10 @@
 /Users/wangjiaming/workspace/java/datareport/src/main/java/com/wondersgroup/datareport/utils/Md5Util.java
 /Users/wangjiaming/workspace/java/datareport/src/main/java/com/wondersgroup/datareport/controller/ReportEmailController.java
 /Users/wangjiaming/workspace/java/datareport/src/main/java/com/wondersgroup/datareport/model/TbCfgDatabase.java
+/Users/wangjiaming/workspace/java/datareport/src/main/java/com/wondersgroup/datareport/utils/Line.java
 /Users/wangjiaming/workspace/java/datareport/src/main/java/com/wondersgroup/datareport/service/DatabaseService.java
 /Users/wangjiaming/workspace/java/datareport/src/main/java/com/wondersgroup/datareport/utils/DateUtil.java
 /Users/wangjiaming/workspace/java/datareport/src/main/java/com/wondersgroup/datareport/service/ReportEmailService.java
-/Users/wangjiaming/workspace/java/datareport/src/main/java/com/wondersgroup/datareport/utils/Echart3DBarModal.java
 /Users/wangjiaming/workspace/java/datareport/src/main/java/com/wondersgroup/datareport/utils/SendMail.java
 /Users/wangjiaming/workspace/java/datareport/src/main/java/com/wondersgroup/datareport/emailModal/DataReportMail.java
 /Users/wangjiaming/workspace/java/datareport/src/main/java/com/wondersgroup/datareport/model/TbCfgReportEmail.java

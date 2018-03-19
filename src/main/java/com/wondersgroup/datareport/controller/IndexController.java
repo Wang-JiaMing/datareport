@@ -2,6 +2,7 @@ package com.wondersgroup.datareport.controller;
 
 import com.wondersgroup.datareport.model.TbCfgDatabase;
 import com.wondersgroup.datareport.service.DatabaseService;
+import com.wondersgroup.datareport.tasks.DataReport;
 import com.wondersgroup.datareport.utils.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -60,11 +61,13 @@ public class IndexController {
             } else {
                 model.addAttribute("title", APPLICATIONNAME);
                 model.addAttribute("databases", tbCfgDatabases);
+                model.addAttribute("sendMailType", DataReport.sendMailType);
                 return "pages/index";
             }
         } else {
             model.addAttribute("title", APPLICATIONNAME);
             model.addAttribute("databases", tbCfgDatabases);
+            model.addAttribute("sendMailType", DataReport.sendMailType);
             return "pages/index";
         }
     }

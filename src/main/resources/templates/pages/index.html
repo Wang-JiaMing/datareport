@@ -11,10 +11,17 @@
         <br/>
         <h1 style="color: white">快速配置</h1>
         <br/>
-        <p style="color: white">只需简单两步，让数据监控工作简单、有效、稳定地生成报告并及时通知</p>
+        <p style="color: white">只需简单几步，让数据监控工作简单、有效、稳定地生成报告并及时通知。</p>
+        <p style="color: yellow">系统每次启动默认关闭邮件通知功能模块，需要点击下方按钮进行手动开启。PS:邮件通知模块需联通外部网络。</p>
+        <p style="color: yellow" th:if="${sendMailType}==false">邮件自动通知状态：<span class="label label-danger">关闭</span></p>
+        <p style="color: yellow" th:if="${sendMailType}==true">邮件自动通知状态：<span class="label label-success">运行中</span></p>
+
         <br/>
-        <p><a class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#myModal">1.快速添加数据库</a>
-            <a class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#addEmail">2.添加报告推送邮箱</a>
+        <p>
+            <a class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#myModal">快速添加数据库</a>
+            <a class="btn btn-success btn-lg" id="openMailModal" th:if="${sendMailType}==false">开启邮件通讯</a>
+            <a th:if="${sendMailType}" class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#addEmail">添加报告推送邮箱</a>
+            <a class="btn btn-success btn-lg" id="closeMailMoal" th:if="${sendMailType}==true">停用邮件通讯</a>
         </p>
     </div>
 </div>
@@ -23,7 +30,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title"><span th:text="${title}"></span>监控数据库列表
-                <div style="float:right">
+                <div style="float:right" th:if="${sendMailType}">
                     <button type="button" class="btn btn-primary btn-xs" th:onclick="'javascript:sendAllReport()'">
                         发送邮件总报告
                     </button>
@@ -51,11 +58,14 @@
                     <td th:text="${data.monitoringMonths}"></td>
                     <td>
                         <!--<a class="btn btn-primary btn-xs" role="button" th:title="${data.schemaName}"-->
-                           <!--th:value="${data.id}" id="openChart">查看图表</a>-->
+                        <!--th:value="${data.id}" id="openChart">查看图表</a>-->
+                        <a th:href="@{'/database/toPage?id='+${data.id}}" class="btn btn-primary btn-xs">详细
+                        </a>
 
-                        <button type="button" class="btn btn-primary btn-xs"
+                        <button th:if="${sendMailType}" type="button" class="btn btn-primary btn-xs"
                                 th:onclick="'javascript:sendReport(\''+${data.id}+'\')'">发送报告
                         </button>
+
                         <button type="button" class="btn btn-danger btn-xs"
                                 th:onclick="'javascript:removedDataba(\''+${data.id}+'\')'">移除
                         </button>
@@ -217,51 +227,35 @@
     </div>
 </div>
 
-<!--<div class="modal fade" id="readChart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">-->
-    <!--<div class="modal-dialog" role="document">-->
-        <!--<div class="modal-content">-->
-
-            <!--<div class="modal-header">-->
-                <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span-->
-                        <!--aria-hidden="true">&times;</span>-->
-                <!--</button>-->
-                <!--<h4 class="modal-title" id="readChartLabel"></h4>-->
-            <!--</div>-->
-            <!--<div class="modal-body">-->
-                <!--<div id="echartMap" style="width: 600px;height:400px;"></div>-->
-            <!--</div>-->
-            <!--<div class="modal-footer">-->
-                <!--<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>-->
-            <!--</div>-->
-
-        <!--</div>-->
-    <!--</div>-->
-<!--</div>-->
-
-
 </body>
 
 <script>
 
+    $('#openMailModal').click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/email/openMailModal",
+            success: function (data) {
+                if (data.type == true) {
+                    alert("启动成功");
+                    window.location.reload();
+                }
+            }
+        });
+    });
 
-//    $("#openChart").click(function () {
-//        var myChart = echarts.init(document.getElementById('echartMap'));
-//        var title = $(this).attr("title") + "图表"
-//        $.ajax({
-//            type: "POST",
-//            url: "/echart/getAll",
-//            data: "id=" + $(this).attr("value"),
-//            dataType: "json",
-//            success: function (msg) {
-//
-//
-//                // 使用刚指定的配置项和数据显示图表。
-//                myChart.setOption(option);
-//                $('#readChartLabel').html(title)
-//                $('#readChart').modal('show');
-//            }
-//        });
-//    });
+    $('#closeMailMoal').click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/email/closeMailModal",
+            success: function (data) {
+                if (data.type == true) {
+                    alert("成功停用");
+                    window.location.reload();
+                }
+            }
+        });
+    });
 
     function sendAllReport() {
         $('#sendAllMailBtn').show();

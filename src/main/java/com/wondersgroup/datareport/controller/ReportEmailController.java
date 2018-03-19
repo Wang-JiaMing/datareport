@@ -4,6 +4,7 @@ import com.wondersgroup.datareport.model.TbCfgDatabase;
 import com.wondersgroup.datareport.model.TbCfgReportEmail;
 import com.wondersgroup.datareport.service.DatabaseService;
 import com.wondersgroup.datareport.service.ReportEmailService;
+import com.wondersgroup.datareport.tasks.DataReport;
 import com.wondersgroup.datareport.utils.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,24 @@ public class ReportEmailController {
 
     @Autowired
     ReportEmailService reportEmailService;
+
+    @RequestMapping("/openMailModal")
+    @ResponseBody
+    public Message openMailModal(){
+        DataReport.sendMailType=true;
+        Message message=new Message();
+        message.setType(true);
+        return message;
+    }
+
+    @RequestMapping("/closeMailModal")
+    @ResponseBody
+    public Message closeMailModal(){
+        DataReport.sendMailType=false;
+        Message message=new Message();
+        message.setType(true);
+        return message;
+    }
 
     @RequestMapping("/save")
     @ResponseBody

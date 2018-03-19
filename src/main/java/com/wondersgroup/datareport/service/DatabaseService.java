@@ -7,20 +7,17 @@ import com.wondersgroup.datareport.emailModal.DataReportMail;
 import com.wondersgroup.datareport.model.TbCfgDatabase;
 import com.wondersgroup.datareport.model.TbCfgDatabaseReport;
 import com.wondersgroup.datareport.model.TbCfgReportEmail;
-import com.wondersgroup.datareport.tasks.DataReport;
-import com.wondersgroup.datareport.utils.Echart3DBarModal;
+import com.wondersgroup.datareport.utils.DateUtil;
+import com.wondersgroup.datareport.utils.Line;
 import com.wondersgroup.datareport.utils.SendMail;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @projectName:datareport
@@ -232,28 +229,33 @@ public class DatabaseService {
         htmlContent.append(DataReportMail.lastHtml());
         SendMail sendMail = new SendMail();
         sendMail.sendHtmlMail(tbCfgDatabases.getDataTitle() + "数据监控报告", htmlContent.toString(), emailAddress);
-
     }
 
-    public Echart3DBarModal fidAll(String id) {
-        Echart3DBarModal echart3DBarModal = new Echart3DBarModal();
-        List<Date> createDate = databaseReportRepository.findDistinctCreateDate(id + "", "1", "0");
-        echart3DBarModal.setTime(createDate);
-        List<String> tableName = databaseReportRepository.findDistinctTableName(id + "", "1", "0");
-        echart3DBarModal.setTableName(tableName);
-        List<List<String>> numberList = new ArrayList<>();
-        for (int i = 0; i < tableName.size(); i++) {
-            for (int j = 0; j < createDate.size(); j++) {
-                String number = databaseReportRepository.findDataNumber(tableName.get(i), createDate.get(j), id + "", "1", "0");
-                String num = i + "," + j + "," + number;
-                List<String> strings = new ArrayList<>();
-                strings.add(num);
-                numberList.add(strings);
+    public List<TbCfgDatabaseReport> getTbCfgDatabaseReport(Long id){
+        TbCfgDatabase tbCfgDatabases = databaseRepository.findAllById(id);
+        return databaseReportRepository.findAllByDatabaseAndMaxCreateDataOrderByDataNumberDesc(tbCfgDatabases.getId(), tbCfgDatabases.getMonitoringDay());
+    }
 
+
+    public Line getLine(Long id) throws Exception{
+        Line line=new Line();
+        TbCfgDatabaseReport tbCfgDatabaseReport= databaseReportRepository.findAllById(id);
+        TbCfgDatabase tbCfgDatabase=tbCfgDatabaseReport.getDatabase();
+        List<TbCfgDatabaseReport> tbCfgDatabaseReports=databaseReportRepository.findAllByTableNameAndDatabaseOrderByCreateDateAsc(tbCfgDatabaseReport.getTableName(),tbCfgDatabase);
+        List<String> xAxisData=new ArrayList<>();
+        List<String> seriesData=new ArrayList<>();
+        for(TbCfgDatabaseReport tbCfgDatabaseReport1:tbCfgDatabaseReports){
+            xAxisData.add(new String(DateUtil.format(tbCfgDatabaseReport1.getCreateDate(),"yyyy-MM-dd HH:mm:ss")));
+            if(tbCfgDatabaseReport1.getGrowNumber()!=null&&!"".equals(tbCfgDatabaseReport1.getGrowNumber())) {
+                seriesData.add(tbCfgDatabaseReport1.getGrowNumber());
+            }else{
+                seriesData.add("0");
             }
         }
-        echart3DBarModal.setData(numberList);
-        return echart3DBarModal;
+        line.setLegendData(tbCfgDatabaseReport.getTableName());
+        line.setSeriesData(seriesData);
+        line.setxAxisData(xAxisData);
+        return line;
     }
 
 }

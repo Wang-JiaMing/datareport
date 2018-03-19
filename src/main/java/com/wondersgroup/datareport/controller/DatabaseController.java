@@ -1,8 +1,10 @@
 package com.wondersgroup.datareport.controller;
 
 import com.wondersgroup.datareport.model.TbCfgDatabase;
+import com.wondersgroup.datareport.model.TbCfgDatabaseReport;
 import com.wondersgroup.datareport.model.TbCfgReportEmail;
 import com.wondersgroup.datareport.service.DatabaseService;
+import com.wondersgroup.datareport.utils.Line;
 import com.wondersgroup.datareport.utils.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,6 +32,19 @@ public class DatabaseController {
     @Autowired
     DatabaseService databaseService;
 
+
+    @RequestMapping("/toPage")
+    public String toDataList(String id,Model model){
+        List<TbCfgDatabaseReport> tbCfgDatabaseReports=databaseService.getTbCfgDatabaseReport(Long.valueOf(id));
+        model.addAttribute("tbCfgDatabaseReports",tbCfgDatabaseReports);
+        return "pages/tableList";
+    }
+    @RequestMapping("/getLine")
+    @ResponseBody
+    public Line getEchartLine(String id) throws Exception{
+        return databaseService.getLine(Long.valueOf(id));
+    }
+
     @RequestMapping("/save")
     @ResponseBody
     public Message toPage(TbCfgDatabase tbCfgDatabase) {
@@ -50,7 +65,7 @@ public class DatabaseController {
 
     @RequestMapping("/delete")
     @ResponseBody
-    public Message toPage(String id) {
+    public Message delete(String id) {
         Message message=new Message();
         try {
             databaseService.deleteDatabase(Long.valueOf(id));

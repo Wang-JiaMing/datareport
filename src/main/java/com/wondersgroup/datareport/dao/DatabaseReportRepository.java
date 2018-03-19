@@ -1,5 +1,6 @@
 package com.wondersgroup.datareport.dao;
 
+import com.wondersgroup.datareport.model.TbCfgDatabase;
 import com.wondersgroup.datareport.model.TbCfgDatabaseReport;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,6 +26,9 @@ public interface DatabaseReportRepository extends JpaRepository<TbCfgDatabaseRep
     @Query(value="select * from tb_cfg_database_report r where r.database_id=?1 and create_date=?2",nativeQuery = true)
     List<TbCfgDatabaseReport> findAllByDatabaseAndMaxCreateData(Long id,Date maxDate);
 
+    @Query(value="select * from tb_cfg_database_report r where r.database_id=?1 and create_date=?2 order by to_number(DATA_NUMBER) desc",nativeQuery = true)
+    List<TbCfgDatabaseReport> findAllByDatabaseAndMaxCreateDataOrderByDataNumberDesc(Long id,Date maxDate);
+
     @Query(value="select DISTINCT create_date from tb_cfg_database_report r where r.database_id=?1 and report_type=?2 and removed=?3 order by create_date ASC ",nativeQuery = true)
     List<Date> findDistinctCreateDate(String id,String reportType,String removed);
 
@@ -34,4 +38,8 @@ public interface DatabaseReportRepository extends JpaRepository<TbCfgDatabaseRep
     @Query(value="select data_number from tb_cfg_database_report r where TABLE_NAME =?1 and create_date=?2 and r.database_id=?3 and report_type=?4 and removed=?5 order by table_name ASC ",nativeQuery = true)
     String findDataNumber(String tableName,Date createDate,String id,String reportType,String removed);
 
+    TbCfgDatabaseReport findAllById(Long id);
+
+
+    List<TbCfgDatabaseReport> findAllByTableNameAndDatabaseOrderByCreateDateAsc(String tableName, TbCfgDatabase tbCfgDatabase);
 }

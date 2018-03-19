@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="zh-CN">
+<head th:include="include/cdHead::head"></head>
+<body>
+
+<div th:include="include/nav::inNav"></div>
+
+<div class="container" style="margin-top: 70px">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><span th:text="${title}"></span>数据列表
+
+            </h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <tr>
+                    <th>#</th>
+                    <th>表名</th>
+                    <th>表中文名</th>
+                    <th>当前统计数据量</th>
+                    <th>最新增长量</th>
+                    <th>最新增长百分百</th>
+                    <th>操作</th>
+                </tr>
+                <tbody>
+                <tr th:each="reports,dataStat:${tbCfgDatabaseReports}">
+                    <td th:text="${dataStat.index+1}"></td>
+                    <td th:text="${reports.tableName}"></td>
+                    <td th:text="${reports.tableCnName}"></td>
+                    <td th:text="${reports.dataNumber}"></td>
+                    <td th:text="${reports.growNumber}"></td>
+                    <td th:text="${reports.growPercent}"></td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-xs"
+                                th:onclick="'javascript:showEchart(\''+${reports.tableName}+'\',\''+${reports.id}+'\')'">
+                            查看增长曲线
+                        </button>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-lg" id="showEchart" tabindex="-2" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content ">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="showEchartTitle"></h4>
+            </div>
+            <div class="modal-body">
+
+                <div align="center">
+                    <div id="main" style="width: 800px;height:400px;"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+
+<script>
+    var option = {
+        title: {
+            text: ''
+        },
+        tooltip: {},
+        legend: {
+            data: []
+        },
+        xAxis: {
+            data: []
+        },
+        yAxis: {},
+        series: [{
+            name: '',
+            type: 'line',
+            data: []
+        }]
+    };
+
+
+    function showEchart(name, id) {
+        $.ajax({
+            type: "POST",
+            url: "/database/getLine",
+            data: "id=" + id,
+            dataType: "json",
+            success: function (data) {
+                var myChart = echarts.init(document.getElementById('main'));
+                option.legend.data[0]=data.legendData;
+                option.series[0].name=data.legendData;
+                for(var i=0;i<data.xAxisData.length;i++){
+                    option.xAxis.data[i]=data.xAxisData[i];
+                }
+                for(var j=0;j<data.seriesData.length;j++){
+                    option.series[0].data[j]=data.seriesData[j];
+                }
+                myChart.setOption(option);
+                $('#showEchartTitle').html(name + " 增长曲线");
+                $('#showEchart').modal('show');
+            }
+        });
+
+    }
+
+</script>
+
+</html>
