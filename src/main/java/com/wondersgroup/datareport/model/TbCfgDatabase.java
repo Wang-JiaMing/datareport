@@ -27,6 +27,15 @@ public class TbCfgDatabase{
     private Date monitoringMonths;
     private Date createDate;
     private String dataTitle;
+    private Double growNumber;
+
+    public Double getGrowNumber() {
+        return growNumber;
+    }
+
+    public void setGrowNumber(Double growNumber) {
+        this.growNumber = growNumber;
+    }
 
     public String getDataTitle() {
         return dataTitle;

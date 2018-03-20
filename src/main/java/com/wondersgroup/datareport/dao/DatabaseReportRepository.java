@@ -21,7 +21,7 @@ public interface DatabaseReportRepository extends JpaRepository<TbCfgDatabaseRep
     @Query(value="select a.table_name,nvl(b.comments,'-'),nvl(a.num_rows,0) from ALL_tables a left join all_tab_comments b on a.table_name=b.table_name where a.owner=?1 and b.owner=?1 ",nativeQuery = true)
     List<Object[]> getTableContent(String schemaName);
 
-    List<TbCfgDatabaseReport> findByTableNameAndReportTypeAndRemovedOrderByCreateDateDesc(String tableName,String reportType,String removed);
+    List<TbCfgDatabaseReport> findByDatabaseAndTableNameAndReportTypeAndRemovedOrderByCreateDateDesc(TbCfgDatabase database,String tableName,String reportType,String removed);
 
     @Query(value="select * from tb_cfg_database_report r where r.database_id=?1 and create_date=?2",nativeQuery = true)
     List<TbCfgDatabaseReport> findAllByDatabaseAndMaxCreateData(Long id,Date maxDate);

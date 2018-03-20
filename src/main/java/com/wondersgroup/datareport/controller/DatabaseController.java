@@ -37,12 +37,29 @@ public class DatabaseController {
     public String toDataList(String id,Model model){
         List<TbCfgDatabaseReport> tbCfgDatabaseReports=databaseService.getTbCfgDatabaseReport(Long.valueOf(id));
         model.addAttribute("tbCfgDatabaseReports",tbCfgDatabaseReports);
+        model.addAttribute("title",tbCfgDatabaseReports.get(0).getDatabase().getDataTitle());
+        model.addAttribute("tableTitle",tbCfgDatabaseReports.get(0).getDatabase().getSchemaName());
         return "pages/tableList";
     }
     @RequestMapping("/getLine")
     @ResponseBody
     public Line getEchartLine(String id) throws Exception{
         return databaseService.getLine(Long.valueOf(id));
+    }
+
+    @RequestMapping("/init")
+    @ResponseBody
+    public Message init() throws Exception{
+        Message message=new Message();
+        try{
+            databaseService.saveReportByDay();
+            message.setType(true);
+            message.setMsg("初始化成功");
+        }catch (Exception e){
+            message.setType(false);
+            message.setMsg(e.getLocalizedMessage());
+        }
+        return message;
     }
 
     @RequestMapping("/save")

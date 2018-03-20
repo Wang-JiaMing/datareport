@@ -43,9 +43,8 @@
                     <th>#</th>
                     <th>库中文名</th>
                     <th>库名</th>
-                    <th>最新日统计时间</th>
-                    <th>最新周统计时间</th>
-                    <th>最新月统计时间</th>
+                    <th>最新统计时间</th>
+                    <th>最新全库增长总量(条)</th>
                     <th>操作</th>
                 </tr>
                 <tbody>
@@ -54,11 +53,8 @@
                     <td th:text="${data.schemaCnName}"></td>
                     <td th:text="${data.schemaName}"></td>
                     <td th:text="${data.monitoringDay}"></td>
-                    <td th:text="${data.monitoringWeek}"></td>
-                    <td th:text="${data.monitoringMonths}"></td>
+                    <td th:text="${data.growNumber}"></td>
                     <td>
-                        <!--<a class="btn btn-primary btn-xs" role="button" th:title="${data.schemaName}"-->
-                        <!--th:value="${data.id}" id="openChart">查看图表</a>-->
                         <a th:href="@{'/database/toPage?id='+${data.id}}" class="btn btn-primary btn-xs">详细
                         </a>
 

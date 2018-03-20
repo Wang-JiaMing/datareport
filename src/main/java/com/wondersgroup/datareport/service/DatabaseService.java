@@ -56,10 +56,11 @@ public class DatabaseService {
     public void saveReportByDay() {
         List<TbCfgDatabase> databases = databaseRepository.findByRemoved("0");
         for (TbCfgDatabase database : databases) {
+            double totalNumber=0;
             List<Object[]> dataContent = databaseReportRepository.getTableContent(database.getSchemaName());
             Date date = new Date();
             for (Object[] dataC : dataContent) {
-                List<TbCfgDatabaseReport> oldDatabaseReport = databaseReportRepository.findByTableNameAndReportTypeAndRemovedOrderByCreateDateDesc(dataC[0].toString(), "1", "0");
+                List<TbCfgDatabaseReport> oldDatabaseReport = databaseReportRepository.findByDatabaseAndTableNameAndReportTypeAndRemovedOrderByCreateDateDesc(database,dataC[0].toString(), "1", "0");
                 TbCfgDatabaseReport tbCfgDatabaseReport = new TbCfgDatabaseReport();
                 tbCfgDatabaseReport.setCreateDate(date);
                 tbCfgDatabaseReport.setDatabase(database);
@@ -70,6 +71,7 @@ public class DatabaseService {
                 tbCfgDatabaseReport.setReportType("1");
                 if (oldDatabaseReport.size() > 0) {
                     Integer growTotal = Integer.valueOf(dataC[2].toString()) - Integer.valueOf(oldDatabaseReport.get(0).getDataNumber());
+                    totalNumber+=Double.valueOf(growTotal);
                     tbCfgDatabaseReport.setGrowNumber(growTotal + "");
                     if (Double.valueOf(oldDatabaseReport.get(0).getDataNumber()) != 0) {
                         DecimalFormat df = new DecimalFormat("#.00");
@@ -83,6 +85,7 @@ public class DatabaseService {
                 databaseReportRepository.save(tbCfgDatabaseReport);
 
             }
+            database.setGrowNumber(totalNumber);
             database.setMonitoringDay(date);
             databaseRepository.save(database);
         }
@@ -96,7 +99,7 @@ public class DatabaseService {
             List<Object[]> dataContent = databaseReportRepository.getTableContent(database.getSchemaName());
             Date date = new Date();
             for (Object[] dataC : dataContent) {
-                List<TbCfgDatabaseReport> oldDatabaseReport = databaseReportRepository.findByTableNameAndReportTypeAndRemovedOrderByCreateDateDesc(dataC[0].toString(), "2", "0");
+                List<TbCfgDatabaseReport> oldDatabaseReport = databaseReportRepository.findByDatabaseAndTableNameAndReportTypeAndRemovedOrderByCreateDateDesc(database,dataC[0].toString(), "2", "0");
                 TbCfgDatabaseReport tbCfgDatabaseReport = new TbCfgDatabaseReport();
                 tbCfgDatabaseReport.setCreateDate(date);
                 tbCfgDatabaseReport.setDatabase(database);
@@ -132,7 +135,7 @@ public class DatabaseService {
             List<Object[]> dataContent = databaseReportRepository.getTableContent(database.getSchemaName());
             Date date = new Date();
             for (Object[] dataC : dataContent) {
-                List<TbCfgDatabaseReport> oldDatabaseReport = databaseReportRepository.findByTableNameAndReportTypeAndRemovedOrderByCreateDateDesc(dataC[0].toString(), "3", "0");
+                List<TbCfgDatabaseReport> oldDatabaseReport = databaseReportRepository.findByDatabaseAndTableNameAndReportTypeAndRemovedOrderByCreateDateDesc(database,dataC[0].toString(), "3", "0");
                 TbCfgDatabaseReport tbCfgDatabaseReport = new TbCfgDatabaseReport();
                 tbCfgDatabaseReport.setCreateDate(date);
                 tbCfgDatabaseReport.setDatabase(database);

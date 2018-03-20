@@ -21,7 +21,7 @@ public class DataReport {
     @Autowired
     DatabaseService databaseService;
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 0 */1 * * ?")
     public void monitorByDay() {
         databaseService.saveReportByDay();
         try {
@@ -33,28 +33,28 @@ public class DataReport {
         }
     }
 
-    @Scheduled(cron = "0 0 0 ? * MON")
-    public void monitorByWeek() {
-        databaseService.saveReportByWeek();
-        try {
-            if (sendMailType) {
-                databaseService.sendMail("2");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    @Scheduled(cron = "0 0 0 ? * MON")
+//    public void monitorByWeek() {
+//        databaseService.saveReportByWeek();
+//        try {
+//            if (sendMailType) {
+//                databaseService.sendMail("2");
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-    @Scheduled(cron = "0 0 0 1 * ? ")
-    public void monitorByMonths() {
-        databaseService.saveReportByMonths();
-        try {
-            if (sendMailType) {
-                databaseService.sendMail("3");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    @Scheduled(cron = "0 0 0 1 * ? ")
+//    public void monitorByMonths() {
+//        databaseService.saveReportByMonths();
+//        try {
+//            if (sendMailType) {
+//                databaseService.sendMail("3");
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }
